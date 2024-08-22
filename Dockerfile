@@ -12,21 +12,21 @@ COPY ["./config", ".cargo/config"]
 RUN rustup target add $(cat /.platform)
 RUN apt-get update && apt-get install -y $(cat /.compiler)
 
-COPY ["./Cargo.toml", "./Cargo.lock", "./"]
+COPY ["./elastic/Cargo.toml", "./elastic/Cargo.lock", "./"]
 
 RUN mkdir src && echo "fn main() {}" > src/main.rs && cargo build --release --target=$(cat /.platform)
 
-COPY ["./src", "./src"]
+COPY ["./elastic/src", "./src"]
 
 RUN touch src/main.rs && cargo build --release --target=$(cat /.platform)
 
 RUN mkdir -p /release/$TARGETARCH
-RUN cp ./target/$(cat /.platform)/release/simpletel /release/$TARGETARCH/simpletel
+RUN cp ./target/$(cat /.platform)/release/elastic /release/$TARGETARCH/elastic
 
 FROM gcr.io/distroless/cc-debian11
 ARG TARGETARCH
 
-COPY --from=build /release/$TARGETARCH/simpletel /usr/local/bin/simpletel
+COPY --from=build /release/$TARGETARCH/elastic /usr/local/bin/elastic
 
-# Set the command to run the simpletel binary
-CMD ["/usr/local/bin/simpletel"]
+# Set the command to run the elastic binary
+CMD ["/usr/local/bin/elastic"]

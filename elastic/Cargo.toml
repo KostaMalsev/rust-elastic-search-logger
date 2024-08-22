@@ -1,8 +1,8 @@
 [package]
-name = "simpletel"
+name = "elastic"
 version = "0.0.1"
 edition = "2021"
-description = "simple rust app demo for opentel"
+description = "simple rust app demo for elastic search logger"
 license = "MIT OR Apache-2.0"
 
 [dependencies]

@@ -1,12 +1,12 @@
 version: '3.8'
 
 services:
-  simpletel:
-    image: simpletel:latest
+  elastic:
+    image: elastic:latest
     environment:
       - RUST_LOG=debug
     volumes:
-      - ./example/simpletel/src:/app/src
+      - ./elastic/src:/app/src
     depends_on:
       - elasticsearch
   

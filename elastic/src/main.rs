@@ -1,12 +1,7 @@
-use rand::Rng;
 use serde_json::json;
-
 use elasticsearch::{
     Elasticsearch, Error,
-    http::transport::Transport,
-    indices::IndicesCreateParts, 
-    GetParts, 
-    IndexParts
+    http::transport::Transport,IndexParts
 };
 
 
@@ -26,6 +21,14 @@ async fn main() -> Result<(), Error> {
     .send()
     .await?;
 
-    let successful = response.status_code().is_success();
+    // Check if the operation was successful
+    if response.status_code().is_success() {
+        println!("Document indexed successfully");
+    } else {
+        eprintln!("Failed to index document. Status: {}", response.status_code());
+        // You might want to log or handle the response body for more details
+        println!("Response body: {:?}", response.text().await?);
+    }
+
     Ok(())
 }
