@@ -1,23 +1,37 @@
 version: '3.8'
 
 services:
-  elastic:
-    image: elastic:latest
+  elasticlog:
+    image: elasticlog
     environment:
       - RUST_LOG=debug
+      - ELASTICSEARCH_HOST=http://elasticsearch:9200
+      - ELASTIC_PASSWORD=password
+      - ELASTIC_USR=elastic
     volumes:
-      - ./elastic/src:/app/src
+      - ./elasticlog/src:/app/src
+    networks:
+      - elastic
     depends_on:
       - elasticsearch
   
   elasticsearch:
+    container_name: 'elasticsearch'
     image: elasticsearch:8.8.0
+    networks:
+      - elastic
     ports:
       - 9200:9200
       - 9300:9300
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=false
+      - xpack.security.enrollment.enabled=false
+      - bootstrap.memory_lock=true
 
 volumes:
   rust-app-data:
+
+networks:
+  elastic:
+    driver: bridge
